@@ -37,17 +37,8 @@ content:
         type: boolean
         default: false
       - name: level
-        type: select
+        type: string
         required: true
-        options:
-          - label: Beginner
-            value: Beginner
-          - label: Intermediate
-            value: Intermediate
-          - label: Advanced
-            value: Advanced
-          - label: All Levels
-            value: All Levels
         default: Beginner
       - name: duration
         type: string
