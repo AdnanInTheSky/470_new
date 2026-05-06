@@ -4,7 +4,6 @@ media:
   extensions: [jpg, jpeg, png, webp, gif]
 
 content:
-  # Courses Collection
   - name: courses
     label: Courses
     type: collection
@@ -49,12 +48,17 @@ content:
 
       - name: level
         type: select
+        required: true
         options:
-          - Beginner
-          - Intermediate
-          - Advanced
-          - All Levels
-        default: All Levels
+          - label: Beginner
+            value: beginner
+          - label: Intermediate
+            value: intermediate
+          - label: Advanced
+            value: advanced
+          - label: All Levels
+            value: all-levels
+        default: beginner
 
       - name: duration
         type: string
@@ -70,22 +74,4 @@ content:
         required: true
         description: "Main course content (Markdown supported)"
 
-  # Optional: Announcements (for your platform updates)
-  - name: announcements
-    label: Announcements
-    type: collection
-    path: content/announcements
-    format: yaml-frontmatter
-
-    fields:
-      - name: title
-        type: string
-        required: true
-
-      - name: date
-        type: date
-        required: true
-
-      - name: body
-        type: rich-text
-        required: true
+  
