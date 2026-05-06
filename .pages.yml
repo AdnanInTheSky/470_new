@@ -81,6 +81,6 @@ collections:
     filename: "{{slug}}.md"
 
 
-    view:
+    view: 
       fields: [title, faculty, featured]
 
