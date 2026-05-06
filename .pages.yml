@@ -1,0 +1,86 @@
+mediaFolder: "public/uploads"
+contentFolder: "content/courses"
+
+
+collections:
+  courses:
+    label: "Courses"
+    path: "content/courses"
+    format: "markdown"
+    create: true
+
+
+    fields:
+      - name: title
+        label: Course Title
+        type: text
+        required: true
+
+
+      - name: slug
+        label: URL Slug
+        type: text
+        required: true
+        pattern: "^[a-z0-9-]+$"
+
+
+      - name: summary
+        label: Short Summary
+        type: textarea
+        required: true
+
+
+      - name: faculty
+        label: Faculty Name
+        type: text
+        required: true
+
+
+      - name: pdf
+        label: PDF Drive Link
+        type: text
+        required: false
+
+
+      - name: youtube
+        label: YouTube Link
+        type: text
+        required: false
+
+
+      - name: featured
+        label: Featured Course
+        type: boolean
+        default: false
+
+
+      - name: level
+        label: Course Level
+        type: select
+        options:
+          - Beginner
+          - Intermediate
+          - Advanced
+          - All Levels
+        default: "All Levels"
+
+
+      - name: duration
+        label: Duration
+        type: text
+        required: false
+        default: "Self-paced"
+
+
+      - name: tags
+        label: Tags
+        type: list
+        required: false
+
+
+    filename: "{{slug}}.md"
+
+
+    view:
+      fields: [title, faculty, featured]
+
