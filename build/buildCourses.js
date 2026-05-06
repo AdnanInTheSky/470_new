@@ -32,39 +32,60 @@ function parseCourses() {
     });
 }
 
+function getYoutubeEmbedUrl(url) {
+    if (!url) return null;
+    // Handle youtu.be format
+    if (url.includes('youtu.be')) {
+        const videoId = url.split('youtu.be/')[1]?.split('?')[0];
+        return videoId ? `https://www.youtube.com/embed/${videoId}` : null;
+    }
+    // Handle youtube.com watch format
+    const videoIdMatch = url.match(/(?:watch\?v=|&v=|\/(?:embed|v)\/)([a-zA-Z0-9_-]{11})/);
+    if (videoIdMatch && videoIdMatch[1]) {
+        return `https://www.youtube.com/embed/${videoIdMatch[1]}`;
+    }
+    return null;
+}
+
 function generateCourseHTML(course, allCourses) {
     const relatedCourses = allCourses
         .filter(c => c.slug !== course.slug)
         .slice(0, 3);
+    
+    const youtubeEmbedUrl = getYoutubeEmbedUrl(course.youtube);
+    const hasVideo = !!youtubeEmbedUrl;
 
     return `<!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>${course.title} - ED-Tech</title>
+    <title>${course.title} — ED-Tech</title>
     <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,300;14..32,400;14..32,500;14..32,600;14..32,700&display=swap" rel="stylesheet">
     <style>
-        /* Minimalist typography */
+        * {
+            font-family: 'Inter', system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+        }
         .prose {
             max-width: 65ch;
-            line-height: 1.8;
-            color: #374151;
+            line-height: 1.75;
+            color: #334155;
         }
         .prose h2 {
             font-size: 1.5rem;
             font-weight: 600;
-            margin-top: 3rem;
+            margin-top: 2.5rem;
             margin-bottom: 1rem;
-            color: #111827;
-            letter-spacing: -0.02em;
+            color: #0f172a;
+            letter-spacing: -0.01em;
         }
         .prose h3 {
             font-size: 1.25rem;
             font-weight: 600;
             margin-top: 2rem;
             margin-bottom: 0.75rem;
-            color: #1f2937;
+            color: #1e293b;
         }
         .prose p {
             margin-bottom: 1.25rem;
@@ -77,79 +98,103 @@ function generateCourseHTML(course, allCourses) {
             margin-bottom: 0.5rem;
         }
         .prose pre {
-            background: #f8fafc;
+            background: #f1f5f9;
             border: 1px solid #e2e8f0;
-            padding: 1.25rem;
-            border-radius: 0.5rem;
+            padding: 1rem;
+            border-radius: 0.75rem;
             overflow-x: auto;
             margin: 1.5rem 0;
-            font-size: 0.9rem;
+            font-size: 0.875rem;
             line-height: 1.6;
         }
         .prose code {
             background: #f1f5f9;
-            color: #dc2626;
+            color: #e11d48;
             padding: 0.2rem 0.4rem;
-            border-radius: 0.25rem;
+            border-radius: 0.375rem;
             font-size: 0.875em;
             font-weight: 500;
         }
         .prose pre code {
             background: none;
-            color: #1e293b;
+            color: #0f172a;
             padding: 0;
             font-weight: 400;
         }
         .prose a {
-            color: #2563eb;
+            color: #3b82f6;
             text-decoration: none;
             border-bottom: 1px solid #bfdbfe;
         }
         .prose a:hover {
-            border-bottom-color: #2563eb;
+            border-bottom-color: #3b82f6;
         }
         .prose blockquote {
-            border-left: 3px solid #e2e8f0;
+            border-left: 3px solid #cbd5e1;
             padding-left: 1.25rem;
             margin: 1.5rem 0;
-            color: #6b7280;
+            color: #64748b;
             font-style: italic;
         }
         .prose img {
-            border-radius: 0.5rem;
+            border-radius: 0.75rem;
             max-width: 100%;
         }
-        
-        /* Reading progress */
         .reading-progress {
             height: 2px;
-            background: linear-gradient(to right, #2563eb, #7c3aed);
+            background: linear-gradient(to right, #3b82f6, #8b5cf6);
             transition: width 0.2s ease;
         }
-        
-        /* Smooth scroll */
         html {
             scroll-behavior: smooth;
         }
-        
-        /* Print styles */
         @media print {
             nav, .no-print { display: none; }
             .prose { max-width: 100%; }
         }
+        .video-container {
+            position: relative;
+            padding-bottom: 56.25%; /* 16:9 aspect ratio */
+            height: 0;
+            overflow: hidden;
+            border-radius: 1rem;
+            background: #f8fafc;
+            box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.05), 0 8px 10px -6px rgba(0, 0, 0, 0.02);
+        }
+        .video-container iframe {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            border: 0;
+            border-radius: 1rem;
+        }
+        .bookmark-btn.bookmarked svg {
+            fill: #3b82f6;
+            stroke: #3b82f6;
+        }
+        .hover-scale {
+            transition: transform 0.2s ease, box-shadow 0.2s ease;
+        }
+        .hover-scale:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 12px 20px -12px rgba(0, 0, 0, 0.15);
+        }
     </style>
 </head>
-<body class="bg-white min-h-screen antialiased">
-    <!-- Reading Progress -->
+<body class="bg-white antialiased">
+    <!-- Reading Progress Bar -->
     <div class="fixed top-0 left-0 w-full z-50">
         <div id="progressBar" class="reading-progress w-0"></div>
     </div>
 
-    <!-- Minimal Nav -->
-    <nav class="border-b border-gray-100 no-print">
-        <div class="max-w-3xl mx-auto px-6 h-14 flex items-center justify-between">
-            <a href="/" class="text-lg font-semibold text-gray-900 hover:text-blue-600 transition">
-                ← Courses
+    <!-- Minimal Navigation -->
+    <nav class="sticky top-0 bg-white/80 backdrop-blur-sm border-b border-gray-100 z-40 no-print">
+        <div class="max-w-4xl mx-auto px-6 h-16 flex items-center justify-between">
+            <a href="/" class="text-base font-medium text-gray-900 hover:text-blue-600 transition flex items-center gap-1">
+                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18"/></svg>
+                All courses
             </a>
             <div class="flex gap-6 text-sm">
                 <a href="/" class="text-gray-500 hover:text-gray-900 transition">Home</a>
@@ -158,105 +203,103 @@ function generateCourseHTML(course, allCourses) {
         </div>
     </nav>
 
-    <!-- Course Header - Minimal -->
+    <!-- Hero Section -->
     <header class="border-b border-gray-100">
-        <div class="max-w-3xl mx-auto px-6 py-16">
-            <!-- Tags -->
-            ${course.tags ? `
-            <div class="flex gap-2 mb-4">
+        <div class="max-w-3xl mx-auto px-6 py-12 md:py-16">
+            ${course.tags && course.tags.length ? `
+            <div class="flex flex-wrap gap-2 mb-5">
                 ${course.tags.map(tag => `
-                    <span class="text-xs font-medium text-gray-500 bg-gray-50 px-2.5 py-1 rounded-full">${tag}</span>
+                    <span class="text-xs font-medium text-gray-600 bg-gray-100 px-2.5 py-1 rounded-full">${tag}</span>
                 `).join('')}
             </div>` : ''}
             
-            <!-- Title -->
-            <h1 class="text-4xl font-bold text-gray-900 mb-3 tracking-tight">
+            <h1 class="text-4xl md:text-5xl font-bold text-gray-900 mb-4 tracking-tight leading-tight">
                 ${course.title}
             </h1>
             
-            <!-- Summary -->
-            <p class="text-lg text-gray-500 mb-6 leading-relaxed">
-                ${course.summary}
+            <p class="text-lg md:text-xl text-gray-500 mb-6 leading-relaxed">
+                ${course.summary || 'An in-depth exploration of fundamental concepts and advanced techniques.'}
             </p>
             
-            <!-- Meta -->
-            <div class="flex flex-wrap items-center gap-4 text-sm text-gray-500 mb-6">
+            <div class="flex flex-wrap items-center gap-x-6 gap-y-3 text-sm text-gray-500 mb-8">
                 <span class="flex items-center gap-1.5">
-                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"/>
-                    </svg>
-                    ${course.faculty}
+                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"/></svg>
+                    ${course.faculty || 'Instructor TBA'}
                 </span>
                 ${course.level ? `
                 <span class="flex items-center gap-1.5">
-                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 7h8m0 0v8m0-8l-8 8-4-4-6 6"/>
-                    </svg>
+                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 7h8m0 0v8m0-8l-8 8-4-4-6 6"/></svg>
                     ${course.level}
                 </span>` : ''}
                 ${course.duration ? `
                 <span class="flex items-center gap-1.5">
-                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"/>
-                    </svg>
-                    ${course.duration}
+                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
+                    ${course.duration} weeks
                 </span>` : ''}
             </div>
             
-            <!-- Action Buttons -->
             <div class="flex flex-wrap gap-3 no-print">
                 ${course.pdf ? `
                 <a href="${course.pdf}" target="_blank" 
-                   class="inline-flex items-center gap-2 px-4 py-2 text-sm font-medium text-gray-700 bg-gray-50 rounded-lg hover:bg-gray-100 transition border border-gray-200">
-                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/>
-                    </svg>
-                    PDF
+                   class="inline-flex items-center gap-2 px-4 py-2 text-sm font-medium text-gray-700 bg-gray-50 rounded-xl hover:bg-gray-100 transition border border-gray-200">
+                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/></svg>
+                    Syllabus (PDF)
                 </a>` : ''}
-                ${course.youtube ? `
-                <a href="${course.youtube}" target="_blank" 
-                   class="inline-flex items-center gap-2 px-4 py-2 text-sm font-medium text-gray-700 bg-gray-50 rounded-lg hover:bg-gray-100 transition border border-gray-200">
-                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14.752 11.168l-3.197-2.132A1 1 0 0010 9.87v4.263a1 1 0 001.555.832l3.197-2.132a1 1 0 000-1.664z"/>
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/>
-                    </svg>
-                    Video
+                ${hasVideo ? `
+                <a href="#video-section" 
+                   class="inline-flex items-center gap-2 px-4 py-2 text-sm font-medium text-white bg-blue-600 rounded-xl hover:bg-blue-700 transition shadow-sm">
+                    <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 24 24"><path d="M2.5 4.5L9 12L2.5 19.5V4.5Z" fill="currentColor"/><path d="M9 12L20 6V18L9 12Z" fill="currentColor"/></svg>
+                    Watch intro
                 </a>` : ''}
                 <button onclick="toggleBookmark('${course.slug}')" id="bookmarkBtn"
-                        class="inline-flex items-center gap-2 px-4 py-2 text-sm font-medium text-gray-700 bg-gray-50 rounded-lg hover:bg-gray-100 transition border border-gray-200">
-                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 5a2 2 0 012-2h10a2 2 0 012 2v16l-7-3.5L5 21V5z"/>
-                    </svg>
+                        class="bookmark-btn inline-flex items-center gap-2 px-4 py-2 text-sm font-medium text-gray-700 bg-gray-50 rounded-xl hover:bg-gray-100 transition border border-gray-200">
+                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 5a2 2 0 012-2h10a2 2 0 012 2v16l-7-3.5L5 21V5z"/></svg>
                     <span id="bookmarkText">Bookmark</span>
                 </button>
             </div>
         </div>
     </header>
 
-    <!-- Course Content -->
-    <article class="max-w-3xl mx-auto px-6 py-12">
-        <div class="prose">
+    <!-- YouTube Video Section (if available) -->
+    ${hasVideo ? `
+    <section id="video-section" class="border-b border-gray-100 no-print">
+        <div class="max-w-3xl mx-auto px-6 py-12">
+            <div class="video-container">
+                <iframe src="${youtubeEmbedUrl}?rel=0&modestbranding=1&autohide=1&showinfo=0" 
+                        title="${course.title} video"
+                        allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" 
+                        allowfullscreen>
+                </iframe>
+            </div>
+            <p class="text-xs text-gray-400 text-center mt-3">Course overview and key concepts</p>
+        </div>
+    </section>
+    ` : ''}
+
+    <!-- Main Content -->
+    <article class="max-w-3xl mx-auto px-6 py-12 md:py-16">
+        <div class="prose prose-slate max-w-none">
             ${course.htmlContent}
         </div>
     </article>
 
     <!-- Related Courses -->
-    ${relatedCourses.length > 0 ? `
+    ${relatedCourses.length ? `
     <section class="border-t border-gray-100 no-print">
         <div class="max-w-3xl mx-auto px-6 py-16">
-            <h2 class="text-lg font-semibold text-gray-900 mb-6">Related Courses</h2>
-            <div class="grid sm:grid-cols-3 gap-4">
+            <h2 class="text-xl font-semibold text-gray-900 mb-6 tracking-tight">Continue learning</h2>
+            <div class="grid sm:grid-cols-3 gap-5">
                 ${relatedCourses.map(rc => `
-                <a href="/courses/${rc.slug}" class="group block p-4 rounded-lg border border-gray-200 hover:border-gray-300 transition">
+                <a href="/courses/${rc.slug}" class="group block p-4 rounded-xl border border-gray-200 hover:border-gray-300 hover-scale transition bg-white">
                     <h3 class="font-medium text-gray-900 group-hover:text-blue-600 transition mb-1">${rc.title}</h3>
-                    <p class="text-sm text-gray-500">${(rc.summary || '').substring(0, 80)}...</p>
+                    <p class="text-sm text-gray-500 line-clamp-2">${(rc.summary || rc.title).substring(0, 90)}...</p>
                 </a>
                 `).join('')}
             </div>
         </div>
     </section>` : ''}
 
-    <!-- Minimal Footer -->
+    <!-- Footer -->
     <footer class="border-t border-gray-100 no-print">
         <div class="max-w-3xl mx-auto px-6 py-8 text-center text-sm text-gray-400">
             © ${new Date().getFullYear()} ED-Tech
@@ -264,54 +307,70 @@ function generateCourseHTML(course, allCourses) {
     </footer>
 
     <script>
-        // Reading progress
-        window.addEventListener('scroll', () => {
-            const scrollTop = document.documentElement.scrollTop || document.body.scrollTop;
-            const scrollHeight = document.documentElement.scrollHeight - document.documentElement.clientHeight;
-            const progress = (scrollTop / scrollHeight) * 100;
-            document.getElementById('progressBar').style.width = progress + '%';
-        });
+        (function() {
+            // Reading progress
+            window.addEventListener('scroll', function() {
+                const scrollTop = document.documentElement.scrollTop || document.body.scrollTop;
+                const scrollHeight = document.documentElement.scrollHeight - document.documentElement.clientHeight;
+                const progress = (scrollTop / scrollHeight) * 100;
+                const progressBar = document.getElementById('progressBar');
+                if (progressBar) progressBar.style.width = progress + '%';
+            });
 
-        // Bookmark
-        async function toggleBookmark(slug) {
-            const token = localStorage.getItem('token');
-            if (!token) {
-                if (confirm('Login required. Go to profile?')) window.location.href = '/profile.html';
-                return;
-            }
-            const btn = document.getElementById('bookmarkBtn');
-            const text = document.getElementById('bookmarkText');
-            const originalText = text.textContent;
-            text.textContent = '...';
-            btn.disabled = true;
-            try {
-                const res = await fetch('/api/bookmark', {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json', 'Authorization': 'Bearer ' + token },
-                    body: JSON.stringify({ slug })
-                });
-                const data = await res.json();
-                text.textContent = data.action === 'added' ? 'Bookmarked' : 'Bookmark';
-            } catch (e) {
-                text.textContent = originalText;
-            } finally {
-                btn.disabled = false;
-            }
-        }
-
-        // Check initial bookmark
-        (async () => {
-            const token = localStorage.getItem('token');
-            if (!token) return;
-            try {
-                const res = await fetch('/api/getBookmarks', {
-                    headers: { 'Authorization': 'Bearer ' + token }
-                });
-                const data = await res.json();
-                if (data.bookmarks?.includes('${course.slug}')) {
-                    document.getElementById('bookmarkText').textContent = 'Bookmarked';
+            // Bookmark logic
+            window.toggleBookmark = async function(slug) {
+                const token = localStorage.getItem('token');
+                if (!token) {
+                    if (confirm('Login required to bookmark. Go to profile page?')) {
+                        window.location.href = '/profile.html';
+                    }
+                    return;
                 }
-            } catch (e) {}
+                const btn = document.getElementById('bookmarkBtn');
+                const textSpan = document.getElementById('bookmarkText');
+                const originalText = textSpan.textContent;
+                textSpan.textContent = '...';
+                btn.disabled = true;
+                try {
+                    const res = await fetch('/api/bookmark', {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json', 'Authorization': 'Bearer ' + token },
+                        body: JSON.stringify({ slug })
+                    });
+                    const data = await res.json();
+                    if (data.action === 'added') {
+                        textSpan.textContent = 'Bookmarked';
+                        btn.classList.add('bookmarked');
+                    } else {
+                        textSpan.textContent = 'Bookmark';
+                        btn.classList.remove('bookmarked');
+                    }
+                } catch (e) {
+                    textSpan.textContent = originalText;
+                } finally {
+                    btn.disabled = false;
+                }
+            };
+
+            // Check initial bookmark status
+            (async function checkBookmark() {
+                const token = localStorage.getItem('token');
+                if (!token) return;
+                try {
+                    const res = await fetch('/api/getBookmarks', {
+                        headers: { 'Authorization': 'Bearer ' + token }
+                    });
+                    const data = await res.json();
+                    if (data.bookmarks && data.bookmarks.includes('${course.slug}')) {
+                        const textSpan = document.getElementById('bookmarkText');
+                        const btn = document.getElementById('bookmarkBtn');
+                        if (textSpan) textSpan.textContent = 'Bookmarked';
+                        if (btn) btn.classList.add('bookmarked');
+                    }
+                } catch (e) {
+                    // silently fail
+                }
+            })();
         })();
     </script>
 </body>
