@@ -2,76 +2,61 @@ media:
   input: content/images
   output: /content/images
   extensions: [jpg, jpeg, png, webp, gif]
-
 content:
   - name: courses
     label: Courses
     type: collection
     path: content/courses
     format: yaml-frontmatter
-
     fields:
       - name: title
         type: string
         required: true
-
       - name: slug
         type: string
         required: true
         pattern: "^[a-z0-9-]+$"
-
       - name: summary
         type: text
         required: true
-
       - name: faculty
         type: string
         required: true
-
       - name: image
         type: image
         required: false
         description: "Course thumbnail image"
-
       - name: pdf
         type: string
         required: false
-
       - name: youtube
         type: string
         required: false
         description: "YouTube link (watch or embed URL)"
-
       - name: featured
         type: boolean
         default: false
-
       - name: level
         type: select
         required: true
         options:
           - label: Beginner
-            value: beginner
+            value: Beginner
           - label: Intermediate
-            value: intermediate
+            value: Intermediate
           - label: Advanced
-            value: advanced
+            value: Advanced
           - label: All Levels
-            value: all-levels
-        default: beginner
-
+            value: All Levels
+        default: Beginner
       - name: duration
         type: string
         required: false
-        description: "Example: 6 weeks / 10 hours / Self-paced"
-
+        description: "Example: 6 Weeks / 10 Hours / Self-paced"
       - name: tags
         type: string
         list: true
-
       - name: body
         type: rich-text
         required: true
         description: "Main course content (Markdown supported)"
-
-  
