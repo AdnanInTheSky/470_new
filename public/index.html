@@ -1,0 +1,190 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>ED-Tech Platform - Courses</title>
+  <meta name="description" content="Browse our collection of quality courses">
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          colors: {
+            primary: '#2563eb',
+            secondary: '#7c3aed',
+          }
+        }
+      }
+    }
+  </script>
+  <style>
+    .course-card {
+      cursor: pointer;
+      transition: all 0.3s ease;
+    }
+    .course-card:hover {
+      transform: translateY(-4px);
+      box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
+    }
+  </style>
+</head>
+<body class="bg-gray-50 min-h-screen">
+  <!-- Navbar -->
+  <nav class="bg-white shadow-md sticky top-0 z-50">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <div class="flex justify-between h-16">
+        <div class="flex items-center">
+          <a href="/" class="text-2xl font-bold text-blue-600 hover:text-blue-700 transition">
+            📚 ED-Tech
+          </a>
+        </div>
+        <div class="hidden md:flex items-center space-x-8">
+          <a href="/" class="text-blue-600 font-semibold border-b-2 border-blue-600 pb-1">Home</a>
+          <a href="/profile.html" class="text-gray-700 hover:text-blue-600 font-medium transition">My Profile</a>
+        </div>
+        <!-- Mobile menu button -->
+        <div class="md:hidden flex items-center">
+          <button id="mobileMenuBtn" class="text-gray-700 hover:text-blue-600 focus:outline-none">
+            <svg class="h-6 w-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"/>
+            </svg>
+          </button>
+        </div>
+      </div>
+    </div>
+    <!-- Mobile menu -->
+    <div id="mobileMenu" class="hidden md:hidden bg-white border-t">
+      <a href="/" class="block px-4 py-3 text-blue-600 font-semibold bg-blue-50">Home</a>
+      <a href="/profile.html" class="block px-4 py-3 text-gray-700 hover:bg-gray-50">My Profile</a>
+    </div>
+  </nav>
+
+  <!-- Hero Section -->
+  <div class="bg-gradient-to-r from-blue-600 via-blue-700 to-purple-700 text-white">
+    <div class="max-w-7xl mx-auto px-4 py-20 sm:py-24">
+      <div class="text-center">
+        <h1 class="text-4xl sm:text-5xl md:text-6xl font-bold mb-6">
+          Learn Without Limits
+        </h1>
+        <p class="text-xl sm:text-2xl text-blue-100 mb-8 max-w-3xl mx-auto">
+          Discover courses that fit your goals. Learn from expert faculty at your own pace.
+        </p>
+        <div class="flex justify-center gap-4">
+          <a href="#courses" class="bg-white text-blue-600 px-8 py-3 rounded-lg font-bold hover:bg-blue-50 transition shadow-lg">
+            Browse Courses
+          </a>
+          <a href="/profile.html" class="bg-transparent border-2 border-white text-white px-8 py-3 rounded-lg font-bold hover:bg-white hover:text-blue-600 transition">
+            My Profile
+          </a>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Stats Bar -->
+  <div class="bg-white shadow">
+    <div class="max-w-7xl mx-auto px-4 py-6">
+      <div class="grid grid-cols-3 gap-4 text-center">
+        <div>
+          <div class="text-2xl font-bold text-blue-600" id="totalCourses">0</div>
+          <div class="text-gray-600 text-sm">Total Courses</div>
+        </div>
+        <div>
+          <div class="text-2xl font-bold text-green-600" id="featuredCount">0</div>
+          <div class="text-gray-600 text-sm">Featured</div>
+        </div>
+        <div>
+          <div class="text-2xl font-bold text-purple-600" id="visibleCount">0</div>
+          <div class="text-gray-600 text-sm">Showing</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Search & Courses Section -->
+  <div id="courses" class="max-w-7xl mx-auto px-4 py-12">
+    <!-- Search Bar -->
+    <div class="mb-8">
+      <div class="relative">
+        <div class="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">
+          <svg class="h-6 w-6 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"/>
+          </svg>
+        </div>
+        <input 
+          type="text" 
+          id="searchInput" 
+          placeholder="Search courses by title, description, or faculty..." 
+          class="w-full pl-14 pr-4 py-4 text-lg border-2 border-gray-200 rounded-xl focus:border-blue-500 focus:outline-none focus:ring-2 focus:ring-blue-200 transition shadow-sm"
+        >
+      </div>
+      
+      <!-- Search Stats -->
+      <div class="flex justify-between items-center mt-3">
+        <p id="stats" class="text-gray-600"></p>
+        <button id="clearSearch" class="text-blue-600 hover:text-blue-700 font-medium hidden">
+          Clear Search ✕
+        </button>
+      </div>
+    </div>
+
+    <!-- Filter Tags (Optional) -->
+    <div id="tagFilters" class="flex flex-wrap gap-2 mb-8"></div>
+
+    <!-- Courses Grid -->
+    <div id="coursesGrid" class="grid sm:grid-cols-2 lg:grid-cols-3 gap-8">
+      <!-- Loading State -->
+      <div class="col-span-full text-center py-12">
+        <div class="inline-block animate-spin rounded-full h-12 w-12 border-4 border-blue-600 border-t-transparent"></div>
+        <p class="text-gray-600 mt-4">Loading courses...</p>
+      </div>
+    </div>
+
+    <!-- No Results State -->
+    <div id="noResults" class="hidden text-center py-12">
+      <div class="text-6xl mb-4">🔍</div>
+      <h3 class="text-2xl font-bold text-gray-700 mb-2">No Courses Found</h3>
+      <p class="text-gray-500 mb-4">Try adjusting your search terms</p>
+      <button onclick="clearSearch()" class="bg-blue-600 text-white px-6 py-2 rounded-lg hover:bg-blue-700 transition">
+        View All Courses
+      </button>
+    </div>
+  </div>
+
+  <!-- Footer -->
+  <footer class="bg-gray-900 text-white mt-16">
+    <div class="max-w-7xl mx-auto px-4 py-12">
+      <div class="grid md:grid-cols-3 gap-8">
+        <div>
+          <h3 class="text-2xl font-bold mb-4">📚 ED-Tech</h3>
+          <p class="text-gray-400">Quality education, accessible anywhere. Learn at your own pace with expert instructors.</p>
+        </div>
+        <div>
+          <h4 class="font-bold text-lg mb-4">Quick Links</h4>
+          <ul class="space-y-2 text-gray-400">
+            <li><a href="/" class="hover:text-white transition">All Courses</a></li>
+            <li><a href="/profile.html" class="hover:text-white transition">My Profile</a></li>
+            <li><a href="#courses" class="hover:text-white transition">Browse Courses</a></li>
+          </ul>
+        </div>
+        <div>
+          <h4 class="font-bold text-lg mb-4">About</h4>
+          <p class="text-gray-400">Built with ❤️ using PagesCMS + Node.js + MongoDB. Deployed on Vercel.</p>
+          <p class="text-gray-500 mt-2">© 2024 ED-Tech Platform</p>
+        </div>
+      </div>
+    </div>
+  </footer>
+
+  <script src="/home.js"></script>
+  
+  <!-- Mobile menu toggle -->
+  <script>
+    document.getElementById('mobileMenuBtn')?.addEventListener('click', () => {
+      const menu = document.getElementById('mobileMenu');
+      menu.classList.toggle('hidden');
+    });
+  </script>
+</body>
+</html>

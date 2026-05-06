@@ -1,0 +1,15 @@
+[
+  {
+    "title": "Python Programming Basics",
+    "slug": "python-basics",
+    "summary": "Learn Python programming from scratch with hands-on examples and real-world projects",
+    "faculty": "Dr. Sarah Rahman",
+    "level": "Beginner",
+    "duration": "6 Weeks",
+    "tags": [
+      "Python",
+      "Programming",
+      "Beginner"
+    ]
+  }
+]
