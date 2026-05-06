@@ -1,52 +1,53 @@
-mediaFolder: "public/uploads"
-contentFolder: "content/courses"
+media:
+  input: content/images
+  output: /content/images
+  extensions: [jpg, jpeg, png, webp, gif]
 
-collections:
-  courses:
-    label: "Courses"
-    path: "content/courses"
-    format: "markdown"
-    create: true
+content:
+  # Courses Collection
+  - name: courses
+    label: Courses
+    type: collection
+    path: content/courses
+    format: yaml-frontmatter
 
     fields:
       - name: title
-        label: Course Title
-        type: text
+        type: string
         required: true
 
       - name: slug
-        label: URL Slug
-        type: text
+        type: string
         required: true
         pattern: "^[a-z0-9-]+$"
 
       - name: summary
-        label: Short Summary
-        type: textarea
+        type: text
         required: true
 
       - name: faculty
-        label: Faculty Name
-        type: text
+        type: string
         required: true
 
+      - name: image
+        type: image
+        required: false
+        description: "Course thumbnail image"
+
       - name: pdf
-        label: PDF Drive Link
-        type: text
+        type: string
         required: false
 
       - name: youtube
-        label: YouTube Link
-        type: text
+        type: string
         required: false
+        description: "YouTube link (watch or embed URL)"
 
       - name: featured
-        label: Featured Course
         type: boolean
         default: false
 
       - name: level
-        label: Course Level
         type: select
         options:
           - Beginner
@@ -56,16 +57,35 @@ collections:
         default: All Levels
 
       - name: duration
-        label: Duration
-        type: text
+        type: string
         required: false
+        description: "Example: 6 weeks / 10 hours / Self-paced"
 
       - name: tags
-        label: Tags
-        type: text
+        type: string
         list: true
 
-    filename: "{{slug}}.md"
+      - name: body
+        type: rich-text
+        required: true
+        description: "Main course content (Markdown supported)"
 
-    view:
-      fields: [title, faculty, level, featured]
+  # Optional: Announcements (for your platform updates)
+  - name: announcements
+    label: Announcements
+    type: collection
+    path: content/announcements
+    format: yaml-frontmatter
+
+    fields:
+      - name: title
+        type: string
+        required: true
+
+      - name: date
+        type: date
+        required: true
+
+      - name: body
+        type: rich-text
+        required: true
