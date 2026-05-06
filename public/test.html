@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Submission Form</title>
+</head>
+<body>
+
+<h2>Course Submission Form</h2>
+
+<form id="form">
+  <input type="text" id="name" placeholder="Name" required><br><br>
+  <input type="text" id="course" placeholder="Course" required><br><br>
+  <input type="text" id="drive" placeholder="Drive Link" required><br><br>
+  <input type="text" id="youtube" placeholder="YouTube Link"><br><br>
+  <textarea id="comment" placeholder="Comment"></textarea><br><br>
+
+  <button type="submit">Submit</button>
+</form>
+
+<p id="msg"></p>
+
+<script>
+const endpoint = "https://script.google.com/macros/s/AKfycbzoIa4owOnRP9AJrwiGTZQcDzbRUulyLxoZNqvsf7ZqtUMHdB48DibwuCObmTASFTym/exec";
+
+document.getElementById("form").addEventListener("submit", async function(e){
+  e.preventDefault();
+
+  const data = {
+    name: document.getElementById("name").value,
+    course: document.getElementById("course").value,
+    drive: document.getElementById("drive").value,
+    youtube: document.getElementById("youtube").value,
+    comment: document.getElementById("comment").value
+  };
+
+  try {
+    const res = await fetch(endpoint, {
+      method: "POST",
+      body: JSON.stringify(data)
+    });
+
+    document.getElementById("msg").innerText = "Submitted successfully";
+    document.getElementById("form").reset();
+
+  } catch (err) {
+    document.getElementById("msg").innerText = "Error submitting data";
+  }
+});
+</script>
+
+</body>
+</html>
