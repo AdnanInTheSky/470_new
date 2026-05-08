@@ -1,0 +1,168 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Course Resource Submission</title>
+
+  <!-- Tailwind CDN -->
+  <script src="https://cdn.tailwindcss.com"></script>
+
+  <!-- Premium font -->
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
+
+  <style>
+    body { 
+      font-family: 'Inter', system-ui, -apple-system, sans-serif;
+      background: linear-gradient(135deg, #f8fafc 0%, #e2e8f0 100%);
+    }
+    .premium-card {
+      background: #ffffff;
+      box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.08), 
+                  0 0 0 1px rgba(0, 0, 0, 0.05);
+    }
+    .input-premium {
+      background: #ffffff;
+      border: 1px solid #e2e8f0;
+      transition: all 0.2s ease;
+    }
+    .input-premium:focus {
+      border-color: #3b82f6;
+      box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
+    }
+    .btn-premium {
+      background: linear-gradient(135deg, #1e40af 0%, #3b82f6 100%);
+      transition: all 0.2s ease;
+      box-shadow: 0 4px 14px rgba(59, 130, 246, 0.25);
+    }
+    .btn-premium:hover {
+      transform: translateY(-1px);
+      box-shadow: 0 6px 20px rgba(59, 130, 246, 0.35);
+    }
+    .btn-premium:active {
+      transform: translateY(0);
+    }
+  </style>
+</head>
+<body class="text-slate-800 min-h-screen flex items-center justify-center px-4 py-8">
+
+  <div class="w-full max-w-xl premium-card rounded-2xl p-8">
+    <div class="mb-8 border-b border-slate-200 pb-4">
+      <h1 class="text-2xl font-semibold text-slate-900">
+        Course Resource Submission
+      </h1>
+      <p class="text-slate-500 text-sm mt-1">Share your learning resources with the community</p>
+    </div>
+
+    <form id="form" class="space-y-5">
+
+      <div>
+        <label for="name" class="block text-sm font-medium text-slate-700 mb-1.5">Name</label>
+        <input
+          id="name"
+          type="text"
+          placeholder="Your full name"
+          required
+          class="input-premium w-full px-4 py-3 rounded-lg outline-none text-slate-900 placeholder-slate-400"
+        />
+      </div>
+
+      <div>
+        <label for="course" class="block text-sm font-medium text-slate-700 mb-1.5">Course</label>
+        <input
+          id="course"
+          type="text"
+          placeholder="e.g., Advanced Web Development"
+          required
+          class="input-premium w-full px-4 py-3 rounded-lg outline-none text-slate-900 placeholder-slate-400"
+        />
+      </div>
+
+      <div>
+        <label for="drive" class="block text-sm font-medium text-slate-700 mb-1.5">Google Drive Link</label>
+        <input
+          id="drive"
+          type="text"
+          placeholder="https://drive.google.com/..."
+          required
+          class="input-premium w-full px-4 py-3 rounded-lg outline-none text-slate-900 placeholder-slate-400"
+        />
+      </div>
+
+      <div>
+        <label for="youtube" class="block text-sm font-medium text-slate-700 mb-1.5">YouTube Link <span class="text-slate-400 font-normal">(optional)</span></label>
+        <input
+          id="youtube"
+          type="text"
+          placeholder="https://youtube.com/..."
+          class="input-premium w-full px-4 py-3 rounded-lg outline-none text-slate-900 placeholder-slate-400"
+        />
+      </div>
+
+      <div>
+        <label for="comment" class="block text-sm font-medium text-slate-700 mb-1.5">Comment <span class="text-slate-400 font-normal">(optional)</span></label>
+        <textarea
+          id="comment"
+          placeholder="Additional notes or description..."
+          rows="4"
+          class="input-premium w-full px-4 py-3 rounded-lg outline-none text-slate-900 placeholder-slate-400 resize-none"
+        ></textarea>
+      </div>
+
+      <button
+        type="submit"
+        class="btn-premium w-full text-white font-medium py-3 px-4 rounded-lg"
+      >
+        Submit Resource
+      </button>
+    </form>
+
+    <p id="msg" class="mt-6 text-sm text-center min-h-[1.25rem]"></p>
+  </div>
+
+<script>
+const endpoint = "https://script.google.com/macros/s/AKfycbzoIa4owOnRP9AJrwiGTZQcDzbRUulyLxoZNqvsf7ZqtUMHdB48DibwuCObmTASFTym/exec";
+
+document.getElementById("form").addEventListener("submit", async function(e){
+  e.preventDefault();
+
+  const msg = document.getElementById("msg");
+  msg.textContent = "Submitting...";
+  msg.className = "mt-6 text-sm text-center text-slate-500 min-h-[1.25rem]";
+
+  const data = {
+    name: document.getElementById("name").value,
+    course: document.getElementById("course").value,
+    drive: document.getElementById("drive").value,
+    youtube: document.getElementById("youtube").value,
+    comment: document.getElementById("comment").value
+  };
+
+  try {
+    const res = await fetch(endpoint, {
+      method: "POST",
+      headers: { "Content-Type": "text/plain" },
+      body: JSON.stringify(data),
+      redirect: "follow"
+    });
+
+    const result = await res.json();
+
+    if(result.status === "ok" || result.status === "success"){
+      msg.textContent = "✓ Submitted successfully.";
+      msg.className = "mt-6 text-sm text-center text-emerald-600 font-medium min-h-[1.25rem]";
+      document.getElementById("form").reset();
+    } else {
+      msg.textContent = "Submission failed. Please try again.";
+      msg.className = "mt-6 text-sm text-center text-red-600 font-medium min-h-[1.25rem]";
+    }
+
+  } catch (err) {
+    msg.textContent = "Error connecting to server.";
+    msg.className = "mt-6 text-sm text-center text-red-600 font-medium min-h-[1.25rem]";
+  }
+});
+</script>
+
+</body>
+</html>
