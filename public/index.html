@@ -3,49 +3,192 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>ED-Tech</title>
+    <title>ED-Tech — Learn without limits</title>
     <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
     <style>
         * { margin: 0; padding: 0; box-sizing: border-box; }
-        body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; -webkit-font-smoothing: antialiased; }
-        .card { cursor: pointer; transition: all 0.2s ease; }
-        .card:hover { transform: translateY(-2px); box-shadow: 0 4px 12px rgba(0,0,0,0.08); }
+        body { 
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; 
+            -webkit-font-smoothing: antialiased;
+            background: #fefefe;
+        }
+        /* Enhanced card styling — preserves all original click behavior */
+        .card { 
+            cursor: pointer; 
+            transition: all 0.25s ease;
+            background: white;
+            border-radius: 1rem;
+            overflow: hidden;
+        }
+        .card:hover { 
+            transform: translateY(-4px); 
+            box-shadow: 0 20px 25px -12px rgba(0,0,0,0.12), 0 4px 8px -4px rgba(0,0,0,0.02);
+        }
+        /* Featured badge animation */
+        .featured-pill {
+            transition: all 0.2s ease;
+        }
+        .card:hover .featured-pill {
+            background-color: #f3f4f6;
+        }
+        /* Smooth focus ring for search */
+        .search-input:focus {
+            outline: none;
+            box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.15);
+            border-color: #6366f1;
+        }
+        /* Loading shimmer */
+        @keyframes shimmer {
+            0% { background-position: -200% 0; }
+            100% { background-position: 200% 0; }
+        }
+        .shimmer {
+            background: linear-gradient(90deg, #f3f4f6 25%, #e5e7eb 50%, #f3f4f6 75%);
+            background-size: 200% 100%;
+            animation: shimmer 1.2s infinite ease-in-out;
+        }
     </style>
 </head>
-<body class="bg-white">
-    <nav class="border-b border-gray-100">
-        <div class="max-w-6xl mx-auto px-6 h-14 flex items-center justify-between">
-            <a href="/" class="text-lg font-semibold text-gray-900">ED-Tech</a>
-            <div class="flex gap-6 text-sm">
-                <a href="/" class="text-gray-900 font-medium">Courses</a>
-                <a href="/form.html" class="text-gray-900 font-medium">upload</a>
-                <a href="/profile.html" class="text-gray-500 hover:text-gray-900 transition">Profile</a>
-                <a href="https://470-new.vercel.app/" class="text-gray-900 font-medium">shop</a>
+<body class="bg-gradient-to-b from-white to-gray-50/40">
+
+    <!-- Navigation — visually enhanced but preserves all links -->
+    <nav class="sticky top-0 z-20 bg-white/90 backdrop-blur-md border-b border-gray-100 shadow-sm">
+        <div class="max-w-6xl mx-auto px-6 h-16 flex items-center justify-between">
+            <a href="/" class="flex items-center gap-2 text-xl font-bold tracking-tight text-gray-900 hover:text-indigo-600 transition">
+                <i class="fas fa-graduation-cap text-indigo-500 text-xl"></i>
+                <span>ED-Tech</span>
+            </a>
+            <div class="flex items-center gap-6 text-sm font-medium">
+                <a href="/" class="text-gray-900 border-b-2 border-indigo-500 pb-0.5 flex items-center gap-1.5">
+                    <i class="fas fa-book-open text-indigo-500 text-xs"></i>
+                    <span>Courses</span>
+                </a>
+                <a href="/form.html" class="text-gray-600 hover:text-gray-900 transition flex items-center gap-1.5">
+                    <i class="fas fa-upload text-gray-400"></i>
+                    <span>Upload</span>
+                </a>
+                <a href="/profile.html" class="text-gray-600 hover:text-gray-900 transition flex items-center gap-1.5">
+                    <i class="fas fa-user-circle text-gray-400"></i>
+                    <span>Profile</span>
+                </a>
+                <a href="https://470-new.vercel.app/" class="bg-gray-50 hover:bg-gray-100 text-gray-900 px-3 py-1.5 rounded-full flex items-center gap-1.5 transition shadow-sm">
+                    <i class="fas fa-store text-indigo-500 text-sm"></i>
+                    <span>Shop</span>
+                </a>
             </div>
         </div>
     </nav>
 
+    <!-- Hero header — enhanced visual design -->
+    <header class="border-b border-gray-100 bg-gradient-to-r from-indigo-50/30 via-white to-sky-50/20">
+        <div class="max-w-6xl mx-auto px-6 py-16 md:py-20">
+            <div class="flex flex-col md:flex-row md:items-center md:justify-between gap-8">
+                <div class="space-y-4 md:max-w-xl">
+                    <div class="inline-flex items-center gap-2 bg-white/70 backdrop-blur-sm rounded-full px-3 py-1.5 text-sm font-medium text-indigo-700 border border-gray-100 shadow-sm">
+                        <span class="relative flex h-2 w-2">
+                            <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-indigo-400 opacity-75"></span>
+                            <span class="relative inline-flex rounded-full h-2 w-2 bg-indigo-500"></span>
+                        </span>
+                        Expert-led courses
+                    </div>
+                    <h1 class="text-4xl md:text-5xl lg:text-6xl font-bold tracking-tight text-gray-900 leading-tight">
+                        Learn without <span class="text-indigo-600">limits</span>
+                    </h1>
+                    <p class="text-lg md:text-xl text-gray-500 max-w-lg">
+                        Courses from expert faculty, available anywhere.
+                    </p>
+                    <div class="flex flex-wrap gap-3 pt-2">
+                        <a href="#courses-section" class="inline-flex items-center gap-2 bg-indigo-600 hover:bg-indigo-700 text-white px-5 py-2.5 rounded-xl font-medium transition shadow-md">
+                            Explore courses <i class="fas fa-arrow-right text-sm"></i>
+                        </a>
 
-    <header class="border-b border-gray-100">
-        <div class="max-w-6xl mx-auto px-6 py-20">
-            <h1 class="text-5xl font-bold text-gray-900 mb-4 tracking-tight">Learn without limits</h1>
-            <p class="text-xl text-gray-500">Courses from expert faculty, available anywhere.</p>
+                    </div>
+                </div>
+                <div class="hidden md:block relative">
+                    <div class="w-64 h-64 bg-indigo-100/40 rounded-full blur-2xl absolute -z-10 right-0 top-10"></div>
+                    <div class="relative bg-white/40 backdrop-blur-sm rounded-2xl p-4 shadow-xl border border-white/50">
+                        <i class="fas fa-laptop-code text-7xl text-indigo-200/80"></i>
+                    </div>
+                </div>
+            </div>
         </div>
     </header>
 
-
-    <main class="max-w-6xl mx-auto px-6 py-12">
-        <div class="mb-8">
-            <input type="text" id="search" placeholder="Search courses..."
-                   class="w-full px-4 py-3 text-lg border border-gray-200 rounded-lg focus:outline-none focus:border-gray-400 transition">
+    <!-- Main content: search + course grid -->
+    <main class="max-w-6xl mx-auto px-6 py-12 md:py-16" id="courses-section">
+        <!-- Search input - visually enhanced but maintains original ID and behavior -->
+        <div class="mb-10 max-w-2xl">
+            <div class="relative group">
+                <div class="absolute inset-y-0 left-0 flex items-center pl-4 pointer-events-none">
+                    <i class="fas fa-search text-gray-400 group-focus-within:text-indigo-500 transition"></i>
+                </div>
+                <input type="text" id="search" placeholder="Search courses..."
+                       class="search-input w-full pl-12 pr-4 py-3.5 text-base border border-gray-200 rounded-xl bg-white shadow-sm transition-all duration-200">
+            </div>
+            <p class="text-xs text-gray-400 mt-2 flex items-center gap-1">
+                <i class="fas fa-lightbulb text-amber-400 text-xs"></i> 
+                Search by title, summary, or faculty
+            </p>
         </div>
+
+        <!-- Course grid - dynamically populated by home.js -->
         <div id="grid" class="grid sm:grid-cols-2 lg:grid-cols-3 gap-6">
-            <p class="text-gray-400 col-span-full text-center py-12">Loading courses...</p>
+            <!-- Loading skeleton appears while home.js loads courses -->
+            <div class="col-span-full flex justify-center items-center py-16">
+                <div class="flex flex-col items-center gap-3">
+                    <div class="w-10 h-10 border-3 border-indigo-200 border-t-indigo-600 rounded-full animate-spin"></div>
+                    <p class="text-gray-400 text-sm">Loading courses...</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Footer note (purely visual) -->
+        <div class="mt-16 text-center text-xs text-gray-400 border-t border-gray-100 pt-8">
+            <span class="inline-flex items-center gap-1"><i class="fas fa-gem text-indigo-300 text-[10px]"></i> ED-Tech — knowledge without borders</span>
         </div>
     </main>
 
+    <!-- YOUR EXISTING home.js - EXACTLY AS PROVIDED, NOTHING ADDED OR CHANGED -->
+    <script>
+        let courses = [];
 
-    <script src="/home.js"></script>
+        async function load() {
+            try {
+                const res = await fetch('/courses.json');
+                if (!res.ok) throw new Error('Failed to load');
+                courses = await res.json();
+                render(courses);
+            } catch (e) {
+                document.getElementById('grid').innerHTML = 
+                    '<p class="text-red-500 col-span-full text-center py-12">Error loading courses. Run: npm run build</p>';
+            }
+        }
+
+        function render(list) {
+            document.getElementById('grid').innerHTML = list.map(c => `
+                <div class="card bg-white rounded-lg border border-gray-200 p-6" onclick="location.href='/courses/${c.slug}'">
+                    ${c.featured ? '<span class="text-xs text-gray-500 bg-gray-50 px-2 py-0.5 rounded-full mb-3 inline-block">Featured</span>' : ''}
+                    <h2 class="text-lg font-semibold text-gray-900 mb-2">${c.title}</h2>
+                    <p class="text-sm text-gray-500 mb-4">${c.summary}</p>
+                    <div class="flex items-center justify-between text-xs text-gray-400">
+                        <span>${c.faculty}</span>
+                        ${c.duration ? `<span>${c.duration} weeks</span>` : ''}
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        document.getElementById('search').addEventListener('input', e => {
+            const q = e.target.value.toLowerCase();
+            render(courses.filter(c => 
+                c.title.toLowerCase().includes(q) ||
+                c.summary.toLowerCase().includes(q) ||
+                c.faculty.toLowerCase().includes(q)
+            ));
+        });
+
+        load();
+    </script>
 </body>
 </html>
-
